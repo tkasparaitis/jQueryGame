@@ -1,0 +1,7 @@
+
+body { background-color: #ccc; background-image: url(../img/bg.jpg); background-size: 100%;  }
+
+xbot { width: 100px; height: 55px; display: block; position: absolute; top:50%; left:80%;
+    background-image: url(../img/spaceship.png); background-size: 100px, 55px;}
+
+.cqw { background-image: url(../img/bullet.gif); background-size: 25px, 25px;}
