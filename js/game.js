@@ -8,6 +8,7 @@
 var step = 10;
 var lock = 0;
 var keys = {};
+var millis = 100;
 
 $(document).keydown(function (e) {
     keys[e.which] = true;
@@ -159,17 +160,14 @@ function fireX(x, y, did){
 
     crid = createX('cqw', 25, 25, (lft+wd), (tp-10));
 
+    checkEnemy('#cr' + crid);
+
     $('#cr' + crid).animate({left: "30px"}, 3000, 'linear', function(){
 
 
 
-        $('.enemy').css('backgroundSize', '100%');
-        $('.enemy').css('background-position', '0px 0px');
-        $('.enemy').css('backgroundImage', 'url("./img/explode.gif")');
-        $('.enemy').animate({opacity: 0}, 1000, function(){ $('.enemy').remove(); loadEnemy(); });
+            $('#cr' + crid).remove();
 
-
-        $('#cr' + crid).remove();
         lock = 0;
     });
 
@@ -178,6 +176,39 @@ function fireX(x, y, did){
 
 }
 
+function checkEnemy(id){
+
+    if (millis == null) millis = 100;
+
+    var kiek = 0;
+    var enemypos = $('.enemy').position();
+
+    minX = enemypos.left; maxX = minX + 85;
+    minY = enemypos.top; maxY = minY + 66;
+
+
+    consol("enemy: " + enemypos.left + "px " + enemypos.top+"px ("+minX+"/"+maxX+"/"+minY+"/"+maxY+"/"+")");
+    setInterval(function () {
+        kiek = kiek + millis;
+        if(kiek > 3000) return;
+        var pos = $(id).position();
+
+        if( (pos.left >= minX) && (pos.left <= maxX) && (pos.top >= minY) && (pos.top >= minY) ){
+
+            $('.enemy').css('backgroundSize', '100%');
+            $('.enemy').css('background-position', '0px 0px');
+            $('.enemy').css('backgroundImage', 'url("./img/explode.gif")');
+            $(id).remove();
+            $('.enemy').animate({opacity: 0}, 1000, function(){ $('.enemy').remove(); loadEnemy(); });
+
+        }
+
+        consol("left: " + pos.left + ", top: " + pos.top);
+
+    }, millis);
+
+
+}
 
 function createX(type, wdt, hgt, posX, posY){
 
