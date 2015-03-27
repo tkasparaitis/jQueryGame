@@ -24,7 +24,7 @@ $(document).keyup(function (e) {
 });
 
 function actionKeys() {
-    var html = '';
+
     for (var i in keys) {
         if (!keys.hasOwnProperty(i)) continue;
         oneAction(parseInt(i));
@@ -72,9 +72,21 @@ function oneAction(key) {
 function loadEnemy(){
 
     cord = randPosition();
+    enemy = new Array();
+    enemy[1] = "0px 0px";
+    enemy[2] = "85px 0px";
+    enemy[3] = "170px 0px";
+    enemy[4] = "0px 66px";
+    enemy[5] = "85px 66px";
+    enemy[6] = "170px 66px";
+    enemy[7] = "0px 132px";
+    enemy[8] = "85px 132px";
+    enemy[9] = "170px 132px";
+    enemynr = Math.floor((Math.random() * 9) + 1);
+
 
     createX('enemy', 85, 66, cord['x'], cord['y']);
-
+    $('.enemy').css('background-position', enemy[enemynr]);
 }
 
 function randPosition(){
@@ -152,6 +164,7 @@ function fireX(x, y, did){
 
 
         $('.enemy').css('backgroundSize', '100%');
+        $('.enemy').css('background-position', '0px 0px');
         $('.enemy').css('backgroundImage', 'url("./img/explode.gif")');
         $('.enemy').animate({opacity: 0}, 1000, function(){ $('.enemy').remove(); loadEnemy(); });
 
