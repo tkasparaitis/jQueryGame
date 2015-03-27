@@ -5,9 +5,40 @@
 *
 * */
 
+var step = 10;
+var lock = 0;
+var keys = {};
 
-$(document).keydown(function(e) {
-    switch(e.which) {
+$(document).keydown(function (e) {
+    keys[e.which] = true;
+
+    actionKeys();
+    e.preventDefault();
+});
+
+$(document).keyup(function (e) {
+    delete keys[e.which];
+
+    actionKeys();
+    e.preventDefault();
+});
+
+function actionKeys() {
+    var html = '';
+    for (var i in keys) {
+        if (!keys.hasOwnProperty(i)) continue;
+        oneAction(parseInt(i));
+    }
+}
+
+
+ $( document ).ready(function() {
+     loadEnemy();
+});
+
+function oneAction(key) {
+
+    switch (key) {
         case 37: // left
             moveX('main', 'l');
             break;
@@ -24,20 +55,34 @@ $(document).keydown(function(e) {
             moveX('main', 'd');
             break;
 
-        case 32: // down
-            actionX('fire', 'main');
+        case 32: // fire
+
+            if (lock == 0) {
+                actionX('fire', 'main');
+            }
             break;
 
-        default: return; // exit this handler for other keys
+        default:
+            return; // exit this handler for other keys
     }
-    e.preventDefault(); // prevent the default action (scroll / move caret)
-});
+     // prevent the default action (scroll / move caret)
+}
 
 
-function consol(text){
+function loadEnemy(){
 
-    if (window.console) console.log(text);
+    cord = randPosition();
 
+    createX('enemy', 85, 66, cord['x'], cord['y']);
+
+}
+
+function randPosition(){
+
+    var xy = new Array();
+    xy['y'] = Math.floor((Math.random() * $(document).height()) + 1);
+    xy['x'] = Math.floor((Math.random() * ($(document).width()/2)) + 1);
+    return xy;
 }
 
 function moveX(id, direction){
@@ -48,22 +93,22 @@ function moveX(id, direction){
 
     switch(direction) {
         case 'l':
-            lft = lft - 5;
+            lft = lft - step;
             $('#' + id).css('left', lft + 'px');
             break;
 
         case 'u':
-            tp = tp - 5;
+            tp = tp - step;
             $('#' + id).css('top', tp + 'px');
             break;
 
         case 'r':
-            lft = lft + 5;
+            lft = lft + step;
             $('#' + id).css('left', lft + 'px');
             break;
 
         case 'd':
-            tp = tp + 5;
+            tp = tp + step;
             $('#' + id).css('top', tp + 'px');
             break;
  // exit this handler for other keys
@@ -92,7 +137,7 @@ function actionX(cd, did){
 
 function fireX(x, y, did){
 
-
+    lock = 1;
     lft = parseInt($('#' + did).css('left'));
     tp = parseInt($('#' + did).css('top')) + 40;
 
@@ -100,13 +145,23 @@ function fireX(x, y, did){
     hg = parseInt(parseInt($('#' + did).css('height')/2));
 
 
-    id = createX('cqw', 25, 25, (lft+wd), (tp-10));
+    crid = createX('cqw', 25, 25, (lft+wd), (tp-10));
 
-    $('#' + id).animate({left: "-30px"}, 3000, function(){  $('#' + id).remove()  });
+    $('#cr' + crid).animate({left: "30px"}, 3000, 'linear', function(){
 
-//    for(i=0;i<200;i++){setTimeout( function(){ moveX(id, 'u'); }, 500); }
 
-    consol(id);
+
+        $('.enemy').css('backgroundSize', '100%');
+        $('.enemy').css('backgroundImage', 'url("./img/explode.gif")');
+        $('.enemy').animate({opacity: 0}, 1000, function(){ $('.enemy').remove(); loadEnemy(); });
+
+
+        $('#cr' + crid).remove();
+        lock = 0;
+    });
+
+
+    consol(crid + '|' + tp);
 
 }
 
@@ -115,11 +170,22 @@ function createX(type, wdt, hgt, posX, posY){
 
 
     data = $('body').html();
-    id = Math.floor((Math.random() * 10000) + 1);
-    c = '<div id="'+id+'" class="'+type+'" style="display:block; position:absolute; width:'+wdt+'px; height:'+hgt+'px; left:'+posX+'px; top:'+posY+'px;" href="http://mediaart.lt"></div>';
+    id = Math.floor((Math.random() * 10000000) + 1);
+    c = '<div id="cr'+id+'" class="'+type+'" style="display:block; position:absolute; width:'+wdt+'px; height:'+hgt+'px; left:'+posX+'px; top:'+posY+'px;" href="http://mediaart.lt"></div>';
 
     $('body').append(c); //.html(c + data);
 
     return id;
+
+}
+
+
+
+
+
+
+function consol(text){
+
+    if (window.console) console.log(text);
 
 }
